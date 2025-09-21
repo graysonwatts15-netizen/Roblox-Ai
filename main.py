@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # Set your OpenAI API key here or use Replit Secrets
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("https://www.bing.com/search?q=sk-proj-5-qat2az1i3qcy-xprkmkgxfapmlb_9ypvhth137fmhdb2l52m9ftscfoa671zenm9z-puiy70t3blbkfj-v-fauchje92sqjaeaergtpl5znlrxjis2dqo7wceygxr1wpysas_go0jfaxenljr_z17iycqa&gs_lcrp=EgRlZGdlKgcIBBBFGMIDMgcIABBFGMIDMgcIARBFGMIDMgcIAhBFGMIDMgcIAxBFGMIDMgcIBBBFGMIDMgcIBRBFGMIDMgcIBhBFGMIDMgcIBxBFGMID0gEJNzAwMTBqMGoxqAIIsAIB&FORM=ANNTA1&PC=U531")
 
 @app.route("/", methods=["GET"])
 def chat():
