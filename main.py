@@ -1,21 +1,21 @@
 from flask import Flask, request, jsonify
-from bardapi import Bard
+import openai
 import os
 
 app = Flask(__name__)
 
-# Use environment variables for security (recommended)
-bard = Bard(cookie_dict={
-    "__Secure-1PSID": os.getenv("BARD_PSID"),
-    "__Secure-1PSIDTS": os.getenv("BARD_PSIDTS"),
-    "__Secure-1PSIDCC": os.getenv("BARD_PSIDCC")
-}, multi_cookies=True)
+# Set your OpenAI API key (use Render environment variable)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/", methods=["GET"])
 def chat():
-    txt = request.args.get("txt", "")
-    response = bard.get_answer(txt)["content"]
-    return jsonify({"text": response})
+    user_input = request.args.get("txt", "")
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": user_input}]
+    )
+    reply = response.choices[0].message.content
+    return jsonify({"text": reply})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
