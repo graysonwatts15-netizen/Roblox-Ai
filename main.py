@@ -4,14 +4,14 @@ import os
 
 app = Flask(__name__)
 
-# Load your OpenAI API key from environment variables
+# Set your OpenAI API key here or use Replit Secrets
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/", methods=["GET"])
 def chat():
-    user_input = request.args.get("txt", "")
+    user_input = request.args.get("txt")
     if not user_input:
-        return jsonify({"text": "No input provided."})
+        return jsonify({"text": "Missing 'txt' query parameter."}), 400
 
     try:
         response = openai.ChatCompletion.create(
@@ -21,7 +21,6 @@ def chat():
         reply = response.choices[0].message.content
         return jsonify({"text": reply})
     except Exception as e:
-        return jsonify({"text": f"Error: {str(e)}"})
+        return jsonify({"text": f"Error: {str(e)}"}), 500
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+app.run(host="0.0.0.0", port=3000)
