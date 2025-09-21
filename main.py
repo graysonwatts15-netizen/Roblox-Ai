@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify
-from bardapi import BardCookies
+from bardapi import Bard
+import os
 
 app = Flask(__name__)
-bard = BardCookies(cookie_dict={
-    "__Secure-1PSID": "your_psid",
-    "__Secure-1PSIDTS": "your_psidts",
-    "__Secure-1PSIDCC": "your_psidcc"
-})
+
+# Use environment variables for security (recommended)
+bard = Bard(cookie_dict={
+    "__Secure-1PSID": os.getenv("BARD_PSID"),
+    "__Secure-1PSIDTS": os.getenv("BARD_PSIDTS"),
+    "__Secure-1PSIDCC": os.getenv("BARD_PSIDCC")
+}, multi_cookies=True)
 
 @app.route("/", methods=["GET"])
 def chat():
