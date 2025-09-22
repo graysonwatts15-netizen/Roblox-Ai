@@ -3,24 +3,27 @@ from openai import OpenAI
 import os
 
 app = Flask(__name__)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Set your OpenAI API key here or use Replit Secrets
-openai.api_key = os.getenv("https://www.bing.com/search?q=sk-proj-5-qat2az1i3qcy-xprkmkgxfapmlb_9ypvhth137fmhdb2l52m9ftscfoa671zenm9z-puiy70t3blbkfj-v-fauchje92sqjaeaergtpl5znlrxjis2dqo7wceygxr1wpysas_go0jfaxenljr_z17iycqa&gs_lcrp=EgRlZGdlKgcIBBBFGMIDMgcIABBFGMIDMgcIARBFGMIDMgcIAhBFGMIDMgcIAxBFGMIDMgcIBBBFGMIDMgcIBRBFGMIDMgcIBhBFGMIDMgcIBxBFGMID0gEJNzAwMTBqMGoxqAIIsAIB&FORM=ANNTA1&PC=U531")
-
-@app.route("/", methods=["GET"])
+@app.route("/chat", methods=["POST"])
 def chat():
-    user_input = request.args.get("txt")
+    user_input = request.json.get("input", "")
     if not user_input:
-        return jsonify({"text": "Missing 'txt' query parameter."}), 400
+        return jsonify({"error": "No input provided"}), 400
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": user_input}]
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": user_input}
+            ]
         )
         reply = response.choices[0].message.content
-        return jsonify({"text": reply})
-    except Exception as e:
-        return jsonify({"text": f"Error: {str(e)}"}), 500
+        return jsonify({"reply": reply})
 
-app.run(host="0.0.0.0", port=3000)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
